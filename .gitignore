@@ -1,0 +1,9 @@
+.idea
+db.sqlite3
+manage.py
+__pycache__
+
+service/migrations
+service/__pycache__
+
+task_django_stripe_api/__pycache__
