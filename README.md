@@ -10,6 +10,7 @@ API с двумя методами:
 - [X] GET /item/{id}, c помощью которого можно получить простейшую HTML страницу, на которой будет информация о выбранном
   Item и кнопка Buy. По нажатию на кнопку Buy должен происходить запрос на /buy/{id}, получение session_id и далее с
   помощью JS библиотеки Stripe происходить редирект на Checkout форму stripe.redirectToCheckout(sessionId=session_id)
+---
   Бонусные задачи
 - [ ] Запуск используя Docker
 - [ ] Использование environment variables
