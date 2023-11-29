@@ -1,0 +1,5 @@
+.git
+.idea
+__pycache__
+service/__pycache__
+task_django_stripe_api/__pycache__

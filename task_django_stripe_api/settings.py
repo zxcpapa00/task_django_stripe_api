@@ -1,14 +1,15 @@
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-zpuy2io-fe3xfmj@c#s^80191@7#t0c4=dbf6d%z3$rm3gj$)%'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS').split()
 
 # Application definition
 
@@ -58,8 +59,12 @@ WSGI_APPLICATION = 'task_django_stripe_api.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': os.environ.get('DB_ENGINE'),
+        'NAME': os.environ.get('DB_NAME'),
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASS'),
+        'PORT': os.environ.get('DB_PORT'),
+        'HOST': os.environ.get('DB_HOST')
     }
 }
 
@@ -100,5 +105,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Stripe
 
-STRIPE_PUBLIC_KEY = 'pk_test_51NkSi5BbH5DsoVypxG3ja2V8IKN9nWRmJnTjfFpTk2H07DwKaDd47dboDbIyInXRrgcz6yrbnJOTXmZkmnGYmYbw00fCIkD64b'
-STRIPE_SECRET_KEY = 'sk_test_51NkSi5BbH5DsoVypZBJKiEMTa4hnlvHNNsK08tZ1OyAaJ99YGcKYn9a2HfZeB80FQt8MS0gsWlNSFHF3Eson1m4e00AH4MAnfg'
+STRIPE_PUBLIC_KEY = os.environ.get('STRIPE_PUBLIC_KEY')
+STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')

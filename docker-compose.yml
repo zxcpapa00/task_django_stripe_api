@@ -1,0 +1,33 @@
+services:
+  db:
+    image: postgres:15-alpine
+    restart: always
+    env_file: ./.env
+    environment:
+      - POSTGRES_USER=django_admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=stripe_api_db
+    ports:
+      - "5432:5432"
+
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    command: >
+      sh -c "python manage.py runserver 0.0.0.0:8000"
+
+    env_file: ./.env
+    environment:
+      - DB_HOST=db
+      - DB_NAME=stripe_api_db
+      - DB_USER=django_admin
+      - DB_PASSWORD=admin
+
+    depends_on:
+      - db
+    links:
+      - db
