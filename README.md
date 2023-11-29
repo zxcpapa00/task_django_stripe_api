@@ -12,9 +12,9 @@ API с двумя методами:
   помощью JS библиотеки Stripe происходить редирект на Checkout форму stripe.redirectToCheckout(sessionId=session_id)
 ---
   Бонусные задачи
-- [ ] Запуск используя Docker
-- [ ] Использование environment variables
-- [ ] Просмотр Django Моделей в Django Admin панели
+- [X] Запуск используя Docker
+- [X] Использование environment variables
+- [X] Просмотр Django Моделей в Django Admin панели
 - [ ] Запуск приложения на удаленном сервере, доступном для тестирования
 - [ ] Модель Order, в которой можно объединить несколько Item и сделать платёж в Stripe на содержимое Order c общей
   стоимостью всех Items

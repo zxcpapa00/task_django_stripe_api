@@ -4,4 +4,4 @@ from .models import Item
 
 @admin.register(Item)
 class ItemAdmin(admin.ModelAdmin):
-    pass
+    list_display = ["name", "price"]
