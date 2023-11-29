@@ -10,6 +10,10 @@
 <p>{{ item.description }}</p>
 <p>Price: ${{ item.price }}</p>
 <button id="checkout-button">Buy</button>
+<form action="{% url 'add_to_cart' item.id %}" method="post">
+    {% csrf_token %}
+    <button type="submit">Добавить в корзину</button>
+</form>
 
 <script src="https://js.stripe.com/v3/"></script>
 <script>

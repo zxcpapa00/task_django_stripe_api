@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Details</title>
+</head>
+<body>
+<h1>Order Details</h1>
+<p>Total Amount: ${{ order.total_amount }}</p>
+<ul>
+    {% for item in order.items.all %}
+        <li>{{ item.name }} - ${{ item.price }}</li>
+    {% endfor %}
+</ul>
+
+
+<button id="pay-button">Оплатить</button>
+
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+    var stripe = Stripe('pk_test_51NkSi5BbH5DsoVypxG3ja2V8IKN9nWRmJnTjfFpTk2H07DwKaDd47dboDbIyInXRrgcz6yrbnJOTXmZkmnGYmYbw00fCIkD64b');
+
+
+    var paymentButton = document.getElementById('pay-button');
+    paymentButton.addEventListener('click', function () {
+        fetch('/services/order_buy/{{ order.id }}/')
+            .then(response => response.json())
+            .then(data => {
+                stripe.redirectToCheckout({sessionId: data.session_id})
+                    .then(function (result) {
+                        if (result.error) {
+                            alert(result.error.message);
+                        }
+                    });
+            });
+    });
+</script>
+
+</body>
+</html>
