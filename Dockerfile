@@ -10,11 +10,10 @@ COPY ./requirements.txt /task/requirements.txt
 COPY ./.env /task/.env
 EXPOSE 8000
 
-RUN pip install --upgrade pip
-
 RUN apk add postgresql-client &&  \
     apk add build-base &&  \
-    apk add postgresql-dev &&  \
-    rm -f /var/lib/apt/lists/*
+    apk add postgresql-dev
+
+RUN pip install --upgrade pip
 
 RUN pip install -r requirements.txt

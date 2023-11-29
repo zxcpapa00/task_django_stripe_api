@@ -18,7 +18,7 @@ services:
     ports:
       - "8000:8000"
     command: >
-      sh -c "python manage.py runserver 0.0.0.0:8000"
+      sh -c "python manage.py runserver 0.0.0.0:8000 && python manage.py migrate"
 
     env_file: ./.env
     environment:
