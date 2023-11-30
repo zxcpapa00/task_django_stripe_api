@@ -9,8 +9,8 @@
 <h1>Order Details</h1>
 <p>Total Amount: ${{ order.total_amount }}</p>
 <ul>
-    {% for item in order.items.all %}
-        <li>{{ item.name }} - ${{ item.price }}</li>
+    {% for item in order.order_items.all %}
+        <li>{{ item.item.name }} - ${{ item.item.price }} ({{ item.quantity }} шт.)</li>
     {% endfor %}
 </ul>
 

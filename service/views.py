@@ -5,7 +5,7 @@ from django.http import JsonResponse
 import stripe
 from django.views.decorators.csrf import csrf_exempt
 
-from .models import Item, StripeInfo, Order
+from .models import Item, Order, OrderItem
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -15,15 +15,11 @@ def get_checkout_session_id(request, item_id):
     try:
         item = Item.objects.get(pk=item_id)
 
-        # Получаем информацию о товаре и цене из модели StripeInfo
-        stripe_info = StripeInfo.objects.get(item=item)
-        price_id = stripe_info.stripe_price_id
-
         # Создаем сеанс оплаты в Stripe
         session = stripe.checkout.Session.create(
             payment_method_types=['card'],
             line_items=[{
-                'price': price_id,
+                'price': item.stripeinfo.stripe_price_id,
                 'quantity': 1,
             }],
             mode="payment",
@@ -44,13 +40,15 @@ def item_detail(request, item_id):
 
 @login_required
 def add_to_cart(request, item_id):
-    item = get_object_or_404(Item, id=item_id)
     order, created = Order.objects.get_or_create(user=request.user, stripe_payment_intent_id__isnull=True)
-    if not order.total_amount:
-        order.total_amount = item.price
+
+    order_item, create = OrderItem.objects.get_or_create(item_id=item_id, order=order)
+    order.total_amount += order_item.item.price
+    if order_item in order.order_items.all() and not create:
+        order_item.quantity += 1
+        order_item.save()
     else:
-        order.total_amount += item.price
-    order.items.add(item)
+        order.order_items.add(order_item)
     order.save()
     return redirect('item_detail', item_id=item_id)
 
@@ -62,9 +60,9 @@ def create_checkout_session(request, order_id):
     session = stripe.checkout.Session.create(
         payment_method_types=['card'],
         line_items=[{
-            'price': item.stripeinfo.stripe_price_id,
-            'quantity': 1,
-        } for item in order.items.all()],
+            'price': order_item.item.stripeinfo.stripe_price_id,
+            'quantity': order_item.quantity,
+        } for order_item in order.order_items.all()],
         mode='payment',
         success_url=request.build_absolute_uri(order.get_absolute_url()),
         cancel_url=request.build_absolute_uri(order.get_absolute_url()),

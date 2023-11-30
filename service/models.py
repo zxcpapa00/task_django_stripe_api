@@ -23,7 +23,7 @@ class StripeInfo(models.Model):
 
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    items = models.ManyToManyField('Item', related_name='orders')
+    items = models.ManyToManyField('OrderItem', related_name='orders')
     total_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     stripe_payment_intent_id = models.CharField(max_length=50, blank=True, null=True)
 
@@ -32,3 +32,12 @@ class Order(models.Model):
 
     def get_absolute_url(self):
         return reverse('order_detail', args=[str(self.id)])
+
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="order_items")
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return self.order

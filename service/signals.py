@@ -1,8 +1,8 @@
 from django.conf import settings
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 
-from service.models import Item, StripeInfo
+from service.models import Item, StripeInfo, OrderItem
 
 
 # Сигнал срабатывает при создании модели Item
@@ -26,3 +26,10 @@ def create_product_in_stripe(sender, instance, created, **kwargs):
 
         # Передаём price_id и product_id
         stripe_info = StripeInfo.objects.create(item=instance, stripe_product_id=product.id, stripe_price_id=price.id)
+
+
+@receiver(signal=post_delete, sender=OrderItem)
+def delete_order_item(sender, instance, **kwargs):
+    order = instance.order
+    order.total_amount -= (instance.item.price * instance.quantity)
+    order.save()
