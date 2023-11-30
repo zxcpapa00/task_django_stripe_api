@@ -10,9 +10,9 @@ COPY ./requirements.txt /task/requirements.txt
 COPY ./.env /task/.env
 EXPOSE 8000
 
-RUN apk add postgresql-client &&  \
-    apk add build-base &&  \
-    apk add postgresql-dev
+RUN apk --no-cache add postgresql-client &&  \
+    apk --no-cache add build-base &&  \
+    apk --no-cache add postgresql-dev
 
 RUN pip install --upgrade pip
 

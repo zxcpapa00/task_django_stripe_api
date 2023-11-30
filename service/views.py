@@ -57,12 +57,43 @@ def add_to_cart(request, item_id):
 def create_checkout_session(request, order_id):
     order = get_object_or_404(Order, id=order_id, user=request.user)
 
+    line_items = [{
+        'price': order_item.item.stripeinfo.stripe_price_id,
+        'quantity': order_item.quantity,
+    } for order_item in order.order_items.all()]
+
+    # Добавляем скидки
+    discount = order.discounts.all()[0]
+    discount_amount = int((discount.amount / 100) * order.total_amount)
+    discount_item = {
+        'price_data': {
+            'currency': 'usd',
+            'product_data': {
+                'name': discount.name,
+            },
+            'unit_amount': -discount_amount,
+        },
+        'quantity': 1,
+    }
+    line_items.append(discount_item)
+
+    # Добавляем сборы
+    for tax in order.taxes.all():
+        line_taxes = {
+            'price_data': {
+                'currency': 'usd',
+                'product_data': {
+                    'name': tax.name,
+                },
+                'unit_amount': int(tax.amount * 100),
+            },
+            'quantity': 1,
+        }
+        line_items.append(line_taxes)
+
     session = stripe.checkout.Session.create(
         payment_method_types=['card'],
-        line_items=[{
-            'price': order_item.item.stripeinfo.stripe_price_id,
-            'quantity': order_item.quantity,
-        } for order_item in order.order_items.all()],
+        line_items=line_items,
         mode='payment',
         success_url=request.build_absolute_uri(order.get_absolute_url()),
         cancel_url=request.build_absolute_uri(order.get_absolute_url()),

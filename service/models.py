@@ -41,3 +41,17 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return self.order
+
+
+class Discount(models.Model):
+    order = models.ForeignKey(Order, related_name='discounts', on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    stripe_price_id = models.CharField(max_length=100, blank=True, null=True)
+
+
+class Tax(models.Model):
+    order = models.ForeignKey(Order, related_name='taxes', on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    stripe_price_id = models.CharField(max_length=100, blank=True, null=True)

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Item, StripeInfo, Order, OrderItem
+from .models import Item, StripeInfo, Order, OrderItem, Tax, Discount
 
 
 @admin.register(Item)
@@ -20,3 +20,13 @@ class OrderAdmin(admin.ModelAdmin):
 @admin.register(OrderItem)
 class OrderItemAdmin(admin.ModelAdmin):
     pass
+
+
+@admin.register(Tax)
+class TaxAdmin(admin.ModelAdmin):
+    list_display = ['name', 'amount', 'order']
+
+
+@admin.register(Discount)
+class DiscountAdmin(admin.ModelAdmin):
+    list_display = ['name', 'amount', 'order']
