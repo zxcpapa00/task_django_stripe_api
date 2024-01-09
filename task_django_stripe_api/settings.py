@@ -1,17 +1,17 @@
 import os
 from pathlib import Path
+from dotenv import load_dotenv
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+load_dotenv()
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG')
 
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS').split()
 
-# Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -21,7 +21,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    "service"
+    'service',
 ]
 
 MIDDLEWARE = [
@@ -68,7 +68,6 @@ DATABASES = {
     }
 }
 
-# Password validation
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -95,11 +94,9 @@ USE_I18N = True
 
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
 
 STATIC_URL = 'static/'
 
-# Default primary key field type
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 

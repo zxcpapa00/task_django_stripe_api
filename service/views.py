@@ -63,33 +63,34 @@ def create_checkout_session(request, order_id):
     } for order_item in order.order_items.all()]
 
     # Добавляем скидки
-    discount = order.discounts.all()[0]
-    discount_amount = int((discount.amount / 100) * order.total_amount)
-    discount_item = {
-        'price_data': {
-            'currency': 'usd',
-            'product_data': {
-                'name': discount.name,
-            },
-            'unit_amount': -discount_amount,
-        },
-        'quantity': 1,
-    }
-    line_items.append(discount_item)
-
-    # Добавляем сборы
-    for tax in order.taxes.all():
-        line_taxes = {
+    discount = order.discounts.first()
+    if discount:
+        discount_amount = int((discount.amount / 100) * order.total_amount)
+        discount_item = {
             'price_data': {
-                'currency': 'usd',
                 'product_data': {
-                    'name': tax.name,
+                    'name': discount.name,
                 },
-                'unit_amount': int(tax.amount * 100),
+                'unit_amount': -discount_amount,
             },
             'quantity': 1,
         }
-        line_items.append(line_taxes)
+        line_items.append(discount_item)
+
+    # Добавляем сборы
+    taxes = order.taxes.all()
+    if taxes:
+        for tax in taxes:
+            line_taxes = {
+                'price_data': {
+                    'product_data': {
+                        'name': tax.name,
+                    },
+                    'unit_amount': int(tax.amount * 100),
+                },
+                'quantity': 1,
+            }
+            line_items.append(line_taxes)
 
     session = stripe.checkout.Session.create(
         payment_method_types=['card'],

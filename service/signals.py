@@ -21,7 +21,7 @@ def create_product_in_stripe(sender, instance, created, **kwargs):
         price = stripe.Price.create(
             product=product.id,
             unit_amount=int(instance.price * 100),
-            currency='usd',
+            currency=instance.currency,
         )
 
         # Передаём price_id и product_id
